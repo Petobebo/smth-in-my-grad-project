@@ -1,0 +1,350 @@
+
+/* Loader-code */
+
+
+body {
+   margin: 0;
+   padding: 0;
+   background: lightblue;
+   font-family: Arial;
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.loader {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   opacity: 1;
+   transition: opacity 1s ease-in-out;
+}
+
+.loader h1 {
+   margin: 0;
+   padding: 0;
+   text-transform: uppercase;
+   font-size: 10em;
+   color: rgba(255, 255, 255, 0.1);
+   background-image: url(https://t3.ftcdn.net/jpg/00/51/78/34/240_F_51783408_KQxz37dKLxTpRVRexvcVAbGADTiNecio.jpg);
+   background-repeat: repeat-x;
+   -webkit-background-clip: text;
+   animation: animate 15s linear infinite;
+}
+
+@keyframes animate {
+   0% {
+      background-position: left 0px top 80px;
+   }
+
+   40% {
+      background-position: left 800px top -50px;
+   }
+
+   80% {
+      background-position: left 1800px top -50px;
+   }
+
+   100% {
+      background-position: left 2400px top -50px;
+   }
+}
+
+#webContent.hidden {
+   opacity: 0;
+   transition: opacity 1s ease-in-out;
+}
+
+#webContent.show {
+   opacity: 1;
+}
+
+
+/* animated background-code */
+
+.scene, .scene *, nav {
+  position: absolute;
+}
+
+.scene * {
+  transform-style: preserve-3d;
+}
+
+.scene {
+   position:relative;
+   top:150px;
+  width: 500px;
+  font-size:.9vmin;
+  aspect-ratio: 1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  perspective: 150em;
+  overflow: hidden;
+  padding: 10em;
+  display: grid;
+}
+
+.facet {
+  place-self: center;
+  --angle: 60deg;
+  height: calc(tan(15deg)*50em);
+  aspect-ratio: calc(1/cos(15deg));
+  background-image: radial-gradient(at 80% 20%, #fff 5%, #ff0 0, #00f 10%, #000 0), conic-gradient(from 90deg at 0 0, hsl(calc(60*(var(--fStep) + var(--sStep))) 100% 50%), hsl(calc(60*(var(--fStep) + var(--sStep) + 1)) 100% 50%), hsl(calc(60*(var(--fStep) + var(--sStep) + 2)) 100% 50%) 90deg), conic-gradient(from calc(var(--gradTilt)*-90deg) at calc(var(--gradTilt)*100%) 100%, hsl(calc(60*(var(--fStep) + var(--sStep))) 100% 50%), hsl(calc(60*(var(--fStep) + var(--sStep) + 1)) 100% 50%), hsl(calc(60*(var(--fStep) + var(--sStep) + 2)) 100% 50%) 135deg);
+  transform: rotateY(calc(var(--sStep)*30deg)) rotateX(calc(-1*30deg*var(--fStep) + 90deg - 30deg )) translateZ(50em) rotate(45deg);
+  background-blend-mode: difference;
+  mix-blend-mode: difference;
+  animation: spin 18s linear infinite;
+}
+
+.facet::before {
+  content: '';
+  position: absolute;
+  width: 40%;
+  aspect-ratio: 1;
+  right: 100%;
+  top: 100%;
+  background-image: repeating-conic-gradient(at 100% 0, black 0, transparent 15deg), conic-gradient(from 180deg at 100% 0, hsl(calc(60*(var(--fStep) + var(--sStep))) 100% 50%), hsl(calc(60*(var(--fStep) + var(--sStep) - 3.5)) 100% 50%) 90deg);
+  -webkit-mask-image: linear-gradient(45deg, transparent 50%, black 0);
+  mask-image: linear-gradient(45deg, transparent 50%, black 0);
+  animation: fan 1.5s ease-in-out infinite alternate;
+  transform-origin: 100% 0;
+}
+
+@keyframes fan {
+  0% {
+    rotate: y -45deg;
+  }
+  100% {
+    rotate: y 45deg;
+  }
+}
+
+.facet:nth-child(odd) {
+  --gradTilt: 0;
+}
+
+.facet:nth-child(2n) {
+  --gradTilt: 1;
+}
+
+@keyframes spin {
+  100% {
+    rotate: y 1turn;
+  }
+}
+
+/* GUI layout */
+
+input {
+  display: none;
+}
+
+label {
+   position:absolute;
+   top:-360px;
+   left:-200px;
+  display: block;
+  width: min(30em, 108px);
+  aspect-ratio: 1;
+  position: relative;
+  transition: .3s ease-out;
+  margin: min(10em, 30px);
+  perspective: 0;
+  perspective-origin: 100% 66%;
+  clip-path: polygon(0 0, 100% 0, 100% 66%, 60% 66%, 60% 66%, 100% 66%, 100% 100%, 0 100%);
+}
+
+label::before, label::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+label::before {
+  background: linear-gradient(#0bf, #00f, #004 95%, #0ff);
+  transform-origin: left;
+  rotate: y 18deg;
+  transition: inherit;
+}
+
+label::after {
+  background-image: radial-gradient(at 33% 50%, #000 6%, #f00 0 15%, #000 0, #0000 20%);
+}
+
+label:hover {
+  clip-path: polygon(0 0, 100% 0, 100% 56%, 60% 66%, 60% 66%, 100% 76%, 100% 100%, 0 100%);
+}
+
+/* on/off switches */
+
+#playPause:not(:checked) ~ .scene .facet,
+#playPause:not(:checked) ~ .scene .facet::before {
+  animation-play-state: paused;
+}
+
+#playPause:checked ~ label {
+  rotate: -90deg;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0% 33%, 0% 66%, 100% 66%, 100% 100%, 0 100%);
+}
+
+#playPause:checked ~ label::before {
+  rotate: y 0deg;
+}
+
+/* iteration */
+
+.slice1 {
+  --sStep: 0;
+}
+
+.slice2 {
+  --sStep: 1;
+}
+
+.slice3 {
+  --sStep: 2;
+}
+
+.slice4 {
+  --sStep: 3;
+}
+
+.slice5 {
+  --sStep: 4;
+}
+
+.slice6 {
+  --sStep: 5;
+}
+
+.slice7 {
+  --sStep: 6;
+}
+
+.slice8 {
+  --sStep: 7;
+}
+
+.slice9 {
+  --sStep: 8;
+}
+
+.slice10 {
+  --sStep: 9;
+}
+
+.slice11 {
+  --sStep: 10;
+}
+
+.slice12 {
+  --sStep: 11;
+}
+
+.facet:nth-child(5n+1) {
+  --fStep: 1;
+}
+
+.facet:nth-child(5n+2) {
+  --fStep: 2;
+}
+
+.facet:nth-child(5n+3) {
+  --fStep: 3;
+}
+
+
+
+/* Floating-title code */
+
+.dantrick-title {
+  top:-580px;
+  color: blue;     
+  font-size: 60px;  
+  margin: 0 auto;  
+  position: relative;
+  text-align: center;    
+  text-shadow:  
+    0 0 10px blue,
+    0 0 20px blue;     
+  animation: dantrick 2s ease-in-out infinite;
+}
+
+@keyframes dantrick {  
+  0% {   
+    transform: translateY(0px);       
+    text-shadow:      
+      0 0 10px blue,
+      0 0 20px blue;    
+  }
+  50% {    
+    transform: translateY(-20px);        
+    text-shadow:  
+      0 0 15px blue,      
+      0 0 25px blue;       
+  }  
+  100% {   
+    transform: translateY(0px);      
+    text-shadow:      
+      0 0 10px blue,
+      0 0 20px blue;       
+  }       
+}
+
+
+/* nav-code */
+
+/* Reset default styles */
+
+
+ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin-left:60px;
+  padding: 20px;
+}
+
+li {
+  margin: 0 10px;
+}
+
+a {
+  position:absolute;
+  top:200px;
+  color: #000;
+  text-decoration: none;
+  padding: 15px 20px;
+  font-size: 18px;
+  transition: background-color 0.3s;
+  }
+a:hover {
+  background-color: blueviolet;
+  border-radius: 5px;
+}
+
+.home{
+  left:600px;
+}
+
+.types{
+  left:700px;
+}
+
+.info{
+  left:800px;
+}
+
+.contact{
+  left:930px;
+  display:inline;
+}
+
+/* title of section types */
+
+h1{
+  font-size:50px;
+}
